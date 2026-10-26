@@ -137,9 +137,7 @@
         </h2>
         <span class="text-[11px] text-slate-500 font-semibold bg-slate-100 px-2 py-0.5 rounded-full" id="shed-count-badge">0 Galpones</span>
       </div>
-      <div class="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-48 overflow-y-auto no-scrollbar p-0.5" id="shed-buttons-container">
-        <!-- Generado dinámicamente -->
-      </div>
+      <div class="grid grid-cols-4 sm:grid-cols-5 gap-2 max-h-48 overflow-y-auto no-scrollbar p-0.5" id="shed-buttons-container"></div>
     </section>
 
     <!-- Entradas: Temperatura y Humedad -->
@@ -247,12 +245,12 @@
           <p class="text-[11px] text-slate-400 mt-0.5" id="photo-status-desc">Opcional para adjuntar al reporte</p>
         </div>
       </div>
-      <!-- Label que abre la cámara directamente -->
-      <label for="photo-hidden-input" class="shrink-0 bg-slate-50 hover:bg-slate-100 active:bg-slate-200 border border-slate-300/80 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 flex items-center gap-1.5 touch-press transition-colors cursor-pointer" id="btn-take-photo">
+      <!-- Disparador nativo forzado para cámara trasera -->
+      <label for="photo-hidden-input" class="shrink-0 bg-slate-50 hover:bg-slate-100 active:bg-slate-200 border border-slate-300/80 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 flex items-center gap-1.5 touch-press transition-colors cursor-pointer" onclick="document.getElementById('photo-hidden-input').value = null;">
         <i class="ph-bold ph-camera text-slate-600 text-sm"></i>
         <span>Tomar foto</span>
       </label>
-      <input class="hidden" id="photo-hidden-input" type="file" accept="image/*" capture="camera">
+      <input class="hidden" id="photo-hidden-input" type="file" accept="image/*" capture="environment">
     </section>
 
     <!-- Botones de Acción -->
@@ -323,9 +321,7 @@
   </main>
 </div>
 
-<!-- ========================================== -->
-<!-- MODAL 1: ACTUALIZACIÓN OFICIAL V2.0       -->
-<!-- ========================================== -->
+<!-- MODAL 1: ACTUALIZACIÓN OFICIAL V2.0 -->
 <div class="fixed inset-0 z-50 bg-[#35484f]/60 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300 hidden" id="welcome-modal">
   <div class="bg-white rounded-[2rem] p-6 pt-5 pb-6 shadow-2xl border border-white/80 w-full max-w-[390px] mx-auto animate-in fade-in zoom-in-95">
     <div class="flex items-center justify-start mb-4">
@@ -363,9 +359,7 @@
   </div>
 </div>
 
-<!-- ========================================== -->
-<!-- MODAL 2: CONFIGURACIÓN INICIAL / GRANJA   -->
-<!-- ========================================== -->
+<!-- MODAL 2: CONFIGURACIÓN INICIAL / GRANJA -->
 <div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-5 transition-opacity duration-300 hidden" id="config-modal">
   <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl border border-slate-100 relative">
     <div class="flex items-center justify-start mb-2">
@@ -395,9 +389,7 @@
   </div>
 </div>
 
-<!-- ========================================== -->
-<!-- MODAL 3: FICHA TÉCNICA / ACERCA DE         -->
-<!-- ========================================== -->
+<!-- MODAL 3: FICHA TÉCNICA / ACERCA DE -->
 <div class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300 hidden" id="about-modal">
   <article class="w-full max-w-[340px] sm:max-w-[360px] bg-white rounded-[2rem] p-6 shadow-2xl border border-white/60 relative animate-in fade-in zoom-in-95">
     <button aria-label="Cerrar ventana" class="absolute top-5 right-5 w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-700 transition" id="close-about-icon-btn" type="button">
@@ -447,9 +439,7 @@
   </article>
 </div>
 
-<!-- ========================================== -->
-<!-- LÓGICA JAVASCRIPT                          -->
-<!-- ========================================== -->
+<!-- LÓGICA JAVASCRIPT -->
 <script>
 (function () {
   "use strict";
