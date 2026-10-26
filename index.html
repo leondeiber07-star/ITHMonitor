@@ -689,16 +689,30 @@
       fallbackToNativeInput(); return;
     }
     try {
-      cameraStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } },
-        audio: false
-      });
+      try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } },
+          audio: false
+        });
+      } catch (e1) {
+        // Reintento sin restricciones si el dispositivo no coincide con las pedidas
+        if (e1 && (e1.name === "NotFoundError" || e1.name === "OverconstrainedError")) {
+          cameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        } else {
+          throw e1;
+        }
+      }
       cameraVideo.srcObject = cameraStream;
       cameraModal.classList.remove("hidden");
       cameraModal.classList.add("flex");
       await cameraVideo.play().catch(function () {});
     } catch (err) {
-      photoStatusDesc.textContent = "Error de cámara: " + (err && err.name ? err.name : "desconocido");
+      var count = "?";
+      try {
+        var devs = await navigator.mediaDevices.enumerateDevices();
+        count = devs.filter(function (d) { return d.kind === "videoinput"; }).length;
+      } catch (e2) {}
+      photoStatusDesc.textContent = "Error de cámara: " + (err && err.name ? err.name : "desconocido") + " (cámaras detectadas: " + count + ")";
       stopCamera();
       fallbackToNativeInput();
     }
