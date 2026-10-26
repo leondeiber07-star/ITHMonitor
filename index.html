@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1f4d3a">
+<!-- Evitar congelamiento de caché en teléfonos -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Calculadora ITH</title>
 <style>
   :root {
@@ -14,6 +18,8 @@
     --line: #dde3de;
     --brand: #1f4d3a;
     --brand-ink: #ffffff;
+    --whatsapp: #25d366;
+    --whatsapp-ink: #ffffff;
     --err: #b3261e;
     --lv0: #2f7d4f;
     --lv1: #f2b705;
@@ -33,15 +39,40 @@
   .bar {
     background: var(--brand); color: var(--brand-ink);
     padding: calc(18px + env(safe-area-inset-top, 0px)) 20px 22px;
+    display: flex; justify-content: space-between; align-items: flex-start;
   }
   .bar h1 { margin: 0; font-size: 1.25rem; font-weight: 650; letter-spacing: -0.01em; }
-  .bar p { margin: 2px 0 0; font-size: 0.85rem; opacity: .75; }
+  .bar p { margin: 2px 0 0; font-size: 0.85rem; opacity: .85; }
+  .farm-badge {
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+  }
 
   main { max-width: 480px; margin: 0 auto; padding: 16px 16px calc(28px + env(safe-area-inset-bottom, 0px)); }
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
 
+  /* Contexto operativo: Galpón y Turno */
+  .meta-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: -30px; margin-bottom: 12px;
+  }
+  .meta-card { padding: 10px 14px; background: var(--card); box-shadow: 0 4px 12px rgba(20,40,30,.06); }
+  .meta-card label { display: block; font-size: 0.75rem; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+  .meta-card select {
+    width: 100%; border: 0; outline: 0; background: transparent; font: inherit;
+    font-size: 0.95rem; font-weight: 600; color: var(--ink); padding: 4px 0 0; cursor: pointer;
+  }
+
   /* Entradas */
-  .inputs { display: grid; grid-template-columns: 1fr 1fr; margin-top: -34px; box-shadow: 0 6px 18px rgba(20,40,30,.10); }
+  .inputs { display: grid; grid-template-columns: 1fr 1fr; box-shadow: 0 6px 18px rgba(20,40,30,.08); }
   .field { padding: 12px 16px 10px; border-radius: 14px; }
   .field + .field { border-left: 1px solid var(--line); border-radius: 0 14px 14px 0; }
   .field:first-child { border-radius: 14px 0 0 14px; }
@@ -89,15 +120,22 @@
   .act { margin: 0; font-size: 0.92rem; color: var(--muted); }
 
   /* Acciones */
+  .btn-group { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+  .btn-wp {
+    display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 15px;
+    border: 0; border-radius: 12px; font: inherit; font-size: 1.02rem; font-weight: 650; cursor: pointer;
+    background: var(--whatsapp); color: var(--whatsapp-ink); text-decoration: none;
+  }
+  .btn-wp:disabled { opacity: .35; cursor: not-allowed; }
+  .btn-wp:not(:disabled):active { transform: translateY(1px); }
+
   .copy {
-    display: block; width: 100%; margin-top: 14px; padding: 15px; border: 0; border-radius: 12px;
-    font: inherit; font-size: 1.02rem; font-weight: 650; cursor: pointer;
-    background: var(--brand); color: var(--brand-ink);
+    display: block; width: 100%; padding: 13px; border: 1px solid var(--line); border-radius: 12px;
+    font: inherit; font-size: 0.95rem; font-weight: 600; cursor: pointer;
+    background: transparent; color: var(--ink);
   }
   .copy:disabled { opacity: .35; cursor: not-allowed; }
-  .copy:not(:disabled):active { transform: translateY(1px); }
   .ok { min-height: 1.3em; margin: 8px 4px 0; font-size: 0.85rem; color: var(--muted); text-align: center; }
-  button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 
   /* Leyenda */
   .legend { margin-top: 10px; overflow: hidden; }
@@ -110,15 +148,24 @@
   tr.on td { background: #f4f7f5; font-weight: 650; }
   tr.on td.rg { color: var(--ink); }
 
-  /* Pie */
-  .about-btn {
-    display: block; margin: 22px auto 0; padding: 6px 14px; border: 0; background: transparent;
-    color: var(--muted); font: inherit; font-size: 0.85rem; text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+  /* Modal de bienvenida / configuración */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.55); display: flex;
+    align-items: center; justify-content: center; padding: 20px; z-index: 999;
   }
-  .about { margin: 8px auto 0; max-width: 320px; padding: 12px 14px; text-align: center; font-size: 0.9rem; }
-  .about[hidden] { display: none; }
-  .about p { margin: 0; }
-  .foot { margin: 16px 4px 0; font-size: 0.75rem; color: var(--muted); text-align: center; }
+  .modal-overlay[hidden] { display: none; }
+  .modal { background: var(--card); padding: 24px; border-radius: 16px; max-width: 360px; width: 100%; text-align: center; }
+  .modal h3 { margin: 0 0 8px; font-size: 1.2rem; }
+  .modal p { margin: 0 0 16px; font-size: 0.9rem; color: var(--muted); }
+  .modal input {
+    width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 10px;
+    font-size: 1rem; margin-bottom: 16px; outline: none;
+  }
+  .modal input:focus { border-color: var(--brand); }
+  .modal button {
+    width: 100%; padding: 12px; background: var(--brand); color: #fff;
+    border: 0; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer;
+  }
 
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -126,18 +173,45 @@
     }
     :root:not([data-theme="light"]) .field:focus-within,
     :root:not([data-theme="light"]) tr.on td { background: #1c2922; }
-    :root:not([data-theme="light"]) .inputs { box-shadow: none; }
+    :root:not([data-theme="light"]) .meta-card select { color: #e9efeb; }
   }
-  @media (prefers-reduced-motion: reduce) { .pin { transition: none; } .copy:not(:disabled):active { transform: none; } }
 </style>
 </head>
 <body>
+
 <header class="bar">
-  <h1>Calculadora ITH</h1>
-  <p>Índice de temperatura y humedad</p>
+  <div>
+    <h1>Calculadora ITH</h1>
+    <p>Control de ambiente avícola</p>
+  </div>
+  <button type="button" class="farm-badge" id="btnEditFarm" title="Editar nombre de la granja">
+    <span id="farmNameLabel">Granja Avícola</span> ✏️
+  </button>
 </header>
 
 <main>
+  <!-- Sección para identificar el Galpón y Momento -->
+  <div class="meta-grid">
+    <div class="card meta-card">
+      <label for="galpon">Galpón</label>
+      <select id="galpon">
+        <option value="Galpón 6">Galpón 6</option>
+        <option value="Galpón 7">Galpón 7</option>
+        <option value="Galpón 8">Galpón 8</option>
+        <option value="Galpón General">General</option>
+      </select>
+    </div>
+    <div class="card meta-card">
+      <label for="turno">Turno</label>
+      <select id="turno">
+        <option value="Mañana">Mañana</option>
+        <option value="Mediodía">Mediodía</option>
+        <option value="Tarde">Tarde</option>
+        <option value="Noche">Noche</option>
+      </select>
+    </div>
+  </div>
+
   <section class="card inputs" aria-label="Datos de entrada">
     <div class="field" id="fT">
       <label for="t">Temperatura</label>
@@ -174,45 +248,90 @@
     <p class="act" id="act">Ingrese temperatura y humedad para calcular.</p>
   </section>
 
-  <button type="button" class="copy" id="copy" disabled>Copiar resultado</button>
+  <div class="btn-group">
+    <button type="button" class="btn-wp" id="btnWp" disabled>
+      <span>📲 Compartir por WhatsApp</span>
+    </button>
+    <button type="button" class="copy" id="copy" disabled>📋 Copiar al portapapeles</button>
+  </div>
   <p class="ok" id="ok" role="status"></p>
 
   <section class="card legend">
     <h2>Escala de niveles</h2>
     <table id="tbl" aria-label="Rangos de la escala"></table>
   </section>
-
-  <button type="button" class="about-btn" id="aboutBtn" aria-expanded="false" aria-controls="about">Acerca de</button>
-  <div class="card about" id="about" hidden>
-    <p>Creado por leondeiber malvacia</p>
-  </div>
-
-  <p class="foot">ITH = ROUNDUP(0,81*T + (H/100)*(T - 14,4) + 46,4). Redondeo hacia arriba, igual que REDONDEAR.MAS(...;0) en Excel.</p>
 </main>
+
+<!-- Modal para pedir el nombre de la avícola por primera vez -->
+<div class="modal-overlay" id="farmModal" hidden>
+  <div class="modal">
+    <h3>Configuración Inicial</h3>
+    <p>Ingresa el nombre de la avícola o granja para tus reportes:</p>
+    <input type="text" id="farmInput" placeholder="Ej: Granja Avícola 5">
+    <button type="button" id="btnSaveFarm">Guardar y Continuar</button>
+  </div>
+</div>
 
 <script>
 (function () {
   "use strict";
 
-  // Escala de la tabla de rangos. "max" es el limite superior inclusivo (ITH entero).
   var LEVELS = [
-    { max: 69, name: "Confort", range: "menor a 70", dot: "\u{1F7E2}",
+    { max: 69, name: "Confort", range: "menor a 70", dot: "🟢",
       act: "No se requiere acción. Buen momento para preparar la temporada cálida." },
-    { max: 75, name: "Alerta", range: "70 a 75", dot: "\u{1F7E1}",
+    { max: 75, name: "Alerta", range: "70 a 75", dot: "🟡",
       act: "Reducir el estrés por calor: aumentar ventilación y velocidad de ventiladores, usar nebulizadores. Vigilar a las aves y verificar bebederos y ventilación." },
-    { max: 81, name: "Peligro", range: "76 a 81", dot: "\u{1F7E0}",
+    { max: 81, name: "Peligro", range: "76 a 81", dot: "🟠",
       act: "Actuar de inmediato: más ventilación, enfriamiento evaporativo, ajustar nutrientes de la dieta, purgar tuberías con agua fría y maximizar el enfriamiento nocturno." },
-    { max: Infinity, name: "Emergencia", range: "mayor a 81", dot: "\u{1F534}",
+    { max: Infinity, name: "Emergencia", range: "mayor a 81", dot: "🔴",
       act: "Evitar manipular las aves (traslados, vacunación). No alimentar en las horas más calientes. Reducir la intensidad de la luz." }
   ];
   var DOT_VARS = ["--lv0", "--lv1", "--lv2", "--lv3"];
-  var ICON_T = "\u{1F321}\uFE0F", ICON_H = "\u2601\uFE0F";
-  var G_MIN = 60, G_SPAN = 40; // el medidor cubre ITH 60 a 100
+  var G_MIN = 60, G_SPAN = 40;
 
   var $ = function (id) { return document.getElementById(id); };
-  var tIn = $("t"), hIn = $("h"), copyBtn = $("copy");
-  var current = null; // { tTxt, hTxt, v, lv } del ultimo resultado valido
+  var tIn = $("t"), hIn = $("h"), copyBtn = $("copy"), wpBtn = $("btnWp");
+  var galponSel = $("galpon"), turnoSel = $("turno");
+  var farmModal = $("farmModal"), farmInput = $("farmInput"), btnSaveFarm = $("btnSaveFarm");
+  var farmLabel = $("farmNameLabel"), btnEditFarm = $("btnEditFarm");
 
+  var current = null;
+
+  // --- Manejo del nombre de la granja (localStorage) ---
+  function getFarmName() {
+    return localStorage.getItem("ith_farm_name") || "";
+  }
+
+  function setFarmName(name) {
+    var val = name.trim() || "Granja Avícola";
+    localStorage.setItem("ith_farm_name", val);
+    farmLabel.textContent = val;
+  }
+
+  function checkFirstRun() {
+    var saved = getFarmName();
+    if (!saved) {
+      farmModal.hidden = false;
+      farmInput.focus();
+    } else {
+      farmLabel.textContent = saved;
+    }
+  }
+
+  btnSaveFarm.addEventListener("click", function () {
+    if (farmInput.value.trim() !== "") {
+      setFarmName(farmInput.value);
+      farmModal.hidden = true;
+    }
+  });
+
+  btnEditFarm.addEventListener("click", function () {
+    farmInput.value = getFarmName();
+    farmModal.hidden = false;
+    farmInput.focus();
+  });
+
+  // --- Funciones matemáticas y formateo ---
   function parse(v) {
     var s = String(v).trim().replace(",", ".");
     if (s === "" || !/^-?\d*\.?\d+$|^-?\d+\.$/.test(s)) return null;
@@ -220,8 +339,6 @@
     return isFinite(n) ? n : null;
   }
 
-  // Igual que Excel: ROUNDUP(x;0). El toFixed(9) elimina ruido de coma flotante
-  // (ej. 82.00000000000001 daria 83 con Math.ceil directo, Excel da 82).
   function ith(t, h) {
     var raw = 0.81 * t + (h / 100) * (t - 14.4) + 46.4;
     return Math.ceil(Number(raw.toFixed(9)));
@@ -232,14 +349,23 @@
     return LEVELS.length - 1;
   }
 
-  function buildMessage(c) {
+  function buildReportText(c) {
+    var farm = getFarmName() || "Granja Avícola";
+    var fecha = new Date().toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" });
+    var hora = new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
+
     return [
-      "Temperatura " + ICON_T,
-      c.tTxt,
-      "Humedad " + ICON_H,
-      c.hTxt,
-      "ITH: " + c.v,
-      "Índice: " + c.lv.name + " " + c.lv.dot
+      "🐔 *" + farm.toUpperCase() + "*",
+      "📍 *" + galponSel.value + "* | Turno: " + turnoSel.value,
+      "📅 " + fecha + " - " + hora,
+      "──────────────────",
+      "🌡️ *Temperatura:* " + c.tTxt + " °C",
+      "💧 *Humedad:* " + c.hTxt + " %",
+      "📊 *ITH Calculado:* *" + c.v + "*",
+      "⚠️ *Nivel:* " + c.lv.name + " " + c.lv.dot,
+      "──────────────────",
+      "📋 *Acción recomendada:*",
+      c.lv.act
     ].join("\n");
   }
 
@@ -254,7 +380,6 @@
   }
 
   function placePin(v) {
-    // v + 0.5 centra el pin dentro del tramo que ocupa el ITH entero
     var pct = Math.max(1, Math.min(99, ((v + 0.5 - G_MIN) / G_SPAN) * 100));
     $("pin").style.left = pct + "%";
   }
@@ -278,6 +403,7 @@
     if (t === null || h === null || tBad || hBad) {
       current = null;
       copyBtn.disabled = true;
+      wpBtn.disabled = true;
       res.setAttribute("data-lv", "");
       $("val").textContent = "--";
       $("chip").hidden = true;
@@ -292,6 +418,7 @@
     var lv = LEVELS[i];
     current = { tTxt: tRaw, hTxt: hRaw, v: v, lv: lv };
     copyBtn.disabled = false;
+    wpBtn.disabled = false;
     res.setAttribute("data-lv", String(i));
     $("val").textContent = String(v);
     $("chip").textContent = lv.name;
@@ -302,6 +429,15 @@
     drawTable(i);
   }
 
+  // --- Compartir WhatsApp ---
+  wpBtn.addEventListener("click", function () {
+    if (!current) return;
+    var text = buildReportText(current);
+    var url = "https://api.whatsapp.com/send?text=" + encodeURIComponent(text);
+    window.open(url, "_blank");
+  });
+
+  // --- Copiar Portapapeles ---
   function fallbackCopy(text) {
     var ta = document.createElement("textarea");
     ta.value = text;
@@ -317,26 +453,20 @@
     return ok;
   }
 
-  function copy() {
+  copyBtn.addEventListener("click", function () {
     if (!current) return;
-    var text = buildMessage(current);
-    var done = function (ok) { $("ok").textContent = ok ? "Copiado. Ya puede pegarlo en un mensaje." : "No se pudo copiar."; };
+    var text = buildReportText(current);
+    var done = function (ok) { $("ok").textContent = ok ? "Reporte copiado listo para pegar." : "No se pudo copiar."; };
     if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(function () { done(true); },
-        function () { done(fallbackCopy(text)); });
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(fallbackCopy(text)); });
     } else {
       done(fallbackCopy(text));
     }
-  }
+  });
 
   tIn.addEventListener("input", render);
   hIn.addEventListener("input", render);
-  copyBtn.addEventListener("click", copy);
-  $("aboutBtn").addEventListener("click", function () {
-    var box = $("about"), open = box.hidden;
-    box.hidden = !open;
-    this.setAttribute("aria-expanded", String(open));
-  });
+  checkFirstRun();
   render();
 })();
 </script>
