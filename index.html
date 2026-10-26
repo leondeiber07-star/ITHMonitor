@@ -247,11 +247,12 @@
           <p class="text-[11px] text-slate-400 mt-0.5" id="photo-status-desc">Opcional para adjuntar al reporte</p>
         </div>
       </div>
-      <button class="shrink-0 bg-slate-50 hover:bg-slate-100 active:bg-slate-200 border border-slate-300/80 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 flex items-center gap-1.5 touch-press transition-colors" id="btn-take-photo" type="button">
+      <!-- Label que abre la cámara directamente -->
+      <label for="photo-hidden-input" class="shrink-0 bg-slate-50 hover:bg-slate-100 active:bg-slate-200 border border-slate-300/80 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 flex items-center gap-1.5 touch-press transition-colors cursor-pointer" id="btn-take-photo">
         <i class="ph-bold ph-camera text-slate-600 text-sm"></i>
         <span>Tomar foto</span>
-      </button>
-      <input class="hidden" id="photo-hidden-input" accept="image/*" capture="environment" type="file">
+      </label>
+      <input class="hidden" id="photo-hidden-input" type="file" accept="image/*" capture="camera">
     </section>
 
     <!-- Botones de Acción -->
@@ -480,7 +481,6 @@
   var ithPinVal = $("ith-pin-val");
 
   var photoHiddenInput = $("photo-hidden-input");
-  var btnTakePhoto = $("btn-take-photo");
   var photoPreviewImg = $("photo-preview-img");
   var photoPlaceholderIcon = $("photo-placeholder-icon");
   var photoCheckBadge = $("photo-check-badge");
@@ -513,7 +513,7 @@
   var attachedPhotoFile = null;
   var currentResult = null;
 
-  // --- Validación de campos obligatorios para activar botón Guardar y Empezar ---
+  // --- Validación de campos obligatorios ---
   function validateConfigInputs() {
     var farmVal = inputAvicola.value.trim();
     var countVal = parseInt(inputGalpones.value, 10);
@@ -621,7 +621,7 @@
     activeShedLabel.textContent = "Galpón " + selectedShed;
   }
 
-  // --- Modales y Flujo Obligatorio ---
+  // --- Modales y Flujo ---
   function initWorkflow() {
     var welcomed = localStorage.getItem("ith_v2_welcomed");
     if (!welcomed) {
@@ -675,11 +675,7 @@
     aboutModal.classList.add("hidden");
   });
 
-  // --- Foto del Termohigrómetro ---
-  btnTakePhoto.addEventListener("click", function () {
-    photoHiddenInput.click();
-  });
-
+  // --- Manejo del cambio en la Foto ---
   photoHiddenInput.addEventListener("change", function () {
     if (this.files && this.files[0]) {
       attachedPhotoFile = this.files[0];
@@ -761,7 +757,7 @@
     copyStatusMsg.textContent = "Mensaje preparado para portapapeles o WhatsApp.";
   }
 
-  // --- Formato de Mensaje Solicitado (Sin "Los datos") ---
+  // --- Formato de Mensaje Solicitado ---
   function buildFinalMessage() {
     if (!currentResult) return "";
     var cfg = getSettings();
