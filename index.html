@@ -1,1 +1,158 @@
 
+<!DOCTYPE html>
+<html class="h-full bg-slate-100 antialiased" lang="es">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport">
+<title>Actualización Requerida - ITH-Monitor v2.0</title>
+
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Phosphor Icons -->
+<link href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css" rel="stylesheet" type="text/css">
+<link href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css" rel="stylesheet" type="text/css">
+<!-- Fuentes -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            50: '#f0fdf4',
+            100: '#dcfce7',
+            600: '#16a34a',
+            700: '#15803d',
+            800: '#1b4332',
+            900: '#143d2b',
+            950: '#081c14',
+          }
+        },
+        fontFamily: {
+          sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'monospace'],
+        },
+        boxShadow: {
+          'card': '0 20px 40px -15px rgba(20, 61, 43, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04)',
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  body {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .touch-press:active {
+    transform: scale(0.98);
+  }
+</style>
+</head>
+
+<body class="min-h-full bg-slate-100 flex items-center justify-center p-4 sm:p-6 font-sans text-slate-800">
+
+  <main class="w-full max-w-[420px] bg-white rounded-[2rem] p-6 sm:p-7 shadow-card border border-slate-200/80 text-center relative overflow-hidden flex flex-col items-center">
+    
+    <!-- Elemento decorativo de fondo -->
+    <div class="absolute -top-16 -right-16 w-36 h-36 bg-brand-50 rounded-full blur-2xl pointer-events-none"></div>
+
+    <!-- Badge Superior -->
+    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold tracking-wider uppercase bg-[#e8f3ed] text-[#1b4332] border border-[#d2e8db] mb-4">
+      <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      Actualización Requerida
+    </div>
+
+    <!-- Icono de la App -->
+    <div class="w-16 h-16 mb-4 rounded-2xl overflow-hidden shadow-md border border-brand-900/10 shrink-0">
+      <svg viewBox="0 0 512 512" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+        <rect width="512" height="512" rx="110" fill="#1b4332"/>
+        <path d="M220 155 C220 155 145 250 145 315 A75 75 0 0 0 295 315 C295 250 220 155 220 155 Z" fill="none" stroke="#5cdbb5" stroke-width="26" stroke-linejoin="round"/>
+        <path d="M320 120 A28 28 0 0 1 376 120 V280 A54 54 0 1 1 320 280 Z" fill="none" stroke="#ffffff" stroke-width="26" stroke-linecap="round"/>
+        <circle cx="348" cy="342" r="30" fill="#ffffff"/>
+        <rect x="340" y="200" width="16" height="120" rx="8" fill="#ffffff"/>
+      </svg>
+    </div>
+
+    <!-- Título y Versión -->
+    <h1 class="text-2xl font-extrabold text-[#113e30] tracking-tight leading-tight">
+      ITH-Monitor v2.0
+    </h1>
+    <p class="text-xs text-slate-500 font-semibold uppercase tracking-wider mt-0.5 mb-3">
+      Control Bioclimático Avícola
+    </p>
+
+    <!-- Mensaje Profesional -->
+    <div class="w-full space-y-2.5 text-[13.5px] leading-relaxed text-slate-600 bg-slate-50/80 p-4 rounded-2xl border border-slate-100 text-left mb-5">
+      <p>
+        Para continuar utilizando las herramientas operativas y garantizar la precisión en el cálculo bioclimático, es indispensable actualizar a la <strong class="text-slate-900 font-bold">Versión 2.0</strong>.
+      </p>
+      <div class="pt-2 border-t border-slate-200/60 flex flex-col gap-1.5 text-xs text-slate-700 font-medium">
+        <span class="flex items-center gap-2">
+          <i class="ph-fill ph-check-circle text-emerald-600 text-sm"></i>
+          Integración automática de hora legal de Venezuela.
+        </span>
+        <span class="flex items-center gap-2">
+          <i class="ph-fill ph-check-circle text-emerald-600 text-sm"></i>
+          Cuadrícula dinámica de galpones y registro de avícola.
+        </span>
+        <span class="flex items-center gap-2">
+          <i class="ph-fill ph-check-circle text-emerald-600 text-sm"></i>
+          Captura directa de reloj ambiental para WhatsApp.
+        </span>
+      </div>
+    </div>
+
+    <!-- Contenedor del Código QR Centrado con Enlace Directo al APK -->
+    <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center justify-center mb-5 w-auto">
+      <div class="relative w-48 h-48 flex items-center justify-center">
+        <!-- Código QR que codifica directamente el archivo .apk -->
+        <img 
+          src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&color=1b4332&data=https%3A%2F%2Fgithub.com%2Fleondeiber07-star%2FITHMonitor%2Freleases%2Fdownload%2Fv2.0%2Fithmunitor.apk" 
+          alt="QR Descarga Directa APK"
+          class="w-full h-full object-contain rounded-lg"
+        >
+        <!-- Logo Central ITH -->
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div class="w-11 h-11 bg-[#1b4332] rounded-xl flex flex-col items-center justify-center border-2 border-white shadow-sm">
+            <svg viewBox="0 0 512 512" class="w-6 h-6" xmlns="http://www.w3.org/2000/svg">
+              <path d="M220 155 C220 155 145 250 145 315 A75 75 0 0 0 295 315 C295 250 220 155 220 155 Z" fill="none" stroke="#5cdbb5" stroke-width="32" stroke-linejoin="round"/>
+              <path d="M320 120 A28 28 0 0 1 376 120 V280 A54 54 0 1 1 320 280 Z" fill="none" stroke="#ffffff" stroke-width="32" stroke-linecap="round"/>
+              <circle cx="348" cy="342" r="32" fill="#ffffff"/>
+              <rect x="338" y="200" width="20" height="120" rx="10" fill="#ffffff"/>
+            </svg>
+            <span class="text-[7px] font-extrabold text-white tracking-widest leading-none mt-0.5">ITH</span>
+          </div>
+        </div>
+      </div>
+      <span class="block text-[11px] font-bold text-slate-400 mt-2.5 uppercase tracking-wide text-center">
+        Escanea con la cámara del teléfono
+      </span>
+    </div>
+
+    <!-- Botón de Descarga Directa (Apunta directamente al APK) -->
+    <div class="w-full">
+      <a 
+        href="https://github.com/leondeiber07-star/ITHMonitor/releases/download/v2.0/ithmunitor.apk" 
+        download="ithmunitor.apk"
+        class="w-full bg-[#1b4332] hover:bg-[#143326] active:bg-[#0f281e] text-white font-bold py-3.5 px-6 rounded-xl shadow-md flex items-center justify-center gap-2 text-[15px] touch-press transition-all"
+      >
+        <i class="ph-bold ph-download-simple text-lg"></i>
+        <span>Descargar Versión 2.0</span>
+      </a>
+    </div>
+
+    <!-- Créditos del Desarrollador -->
+    <footer class="w-full mt-6 pt-4 border-t border-slate-100 text-[11px] text-slate-400 leading-normal text-center">
+      Desarrollado por <strong class="text-slate-600">Leondeiber Malvacia</strong><br>
+      Especialista Técnico en Análisis Estadístico y Automatización de Datos
+    </footer>
+
+  </main>
+
+</body>
+</html>
